@@ -172,6 +172,7 @@ import org.springframework.util.StringUtils;
  * @author Christian Fredriksson
  * @author Timofey Barabanov
  * @author Janek Lasocki-Biczysko
+ * @author Hyoungjune Kim
  */
 public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 		extends AbstractMessageListenerContainer<K, V> implements ConsumerPauseResumeEventPublisher {
@@ -1242,7 +1243,10 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 		}
 
 		private boolean isListenerAdapterObservationAware() {
-			return this.listener != null && RecordMessagingMessageListenerAdapter.class.equals(this.listener.getClass());
+			return this.listener != null
+					&& (RecordMessagingMessageListenerAdapter.class.equals(this.listener.getClass())
+					|| KafkaBackoffAwareMessageListenerAdapter.class.equals(this.listener.getClass())
+			);
 		}
 
 		private void subscribeOrAssignTopics(final Consumer<? super K, ? super V> subscribingConsumer) {
